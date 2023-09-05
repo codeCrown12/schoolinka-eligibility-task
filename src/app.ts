@@ -7,7 +7,6 @@ import morganMiddleware from './middlewares/morgan.middleware';
 import { logger } from './utils/logger';
 import errorMiddleWare from './middlewares/error.middleware';
 import database from './database';
-import { v2 as cloudinary } from "cloudinary"
 
 export default class App {
 
@@ -22,7 +21,6 @@ export default class App {
         this.initializeMiddlewares()
         this.initializeRoutes(routes)
         this.initializeDatabase()
-        this.initializeCloudinary()
         this.initializeErrorHandling()
     }
 
@@ -52,15 +50,6 @@ export default class App {
         } catch (error) {
           logger.error(`🛢️ [Database]: Database connection failed >>> ERROR: ${error}`)
         }
-    }
-
-    private async initializeCloudinary(): Promise<void> {
-        cloudinary.config({
-            cloud_name: CLOUDINARY_CLOUD_NAME,
-            api_key: CLOUDINARY_API_KEY,
-            api_secret: CLOUDINARY_API_SECRET
-        })
-        logger.info(`🖼️  [cloudinary]: Cloudinary configured`)
     }
 
     private initializeErrorHandling() {

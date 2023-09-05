@@ -36,14 +36,19 @@ export default class AuthService {
             )
         }
         const hashedPassword = await this.hashPassword(dto.password)
-        await this.dbService.user.create({
+        const user = await this.dbService.user.create({
             data: {
                 username: dto.username,
                 email: dto.email,
                 password: hashedPassword
             }
         })
-        return { message: "Signup successful" }
+        const { id, email, username } = user
+        return {
+            id,
+            email,
+            username
+        }
     }
 
     public async login(dto: LoginDto) {
@@ -65,7 +70,7 @@ export default class AuthService {
                 "Invalid login credentials"
             )
         }
-        const token = await this.issueJWT(user.username)
+        const token = await this.issueJWT(user.id)
         const { id, email, username } = user
         return {
             token,
@@ -86,7 +91,7 @@ export default class AuthService {
         return await bcrypt.compare(loginPassword, passwordFromDb)
     }
 
-    public async issueJWT(userId: string) {
+    public async issueJWT(userId: number) {
         const token: string = jwt.sign(
             { userId },
             JWT_SECRET as string,
@@ -97,7 +102,7 @@ export default class AuthService {
 
     public verifyJWT(token: string) {
         try {
-            return jwt.verify(token, JWT_SECRET as string) as { userId: string }
+            return jwt.verify(token, JWT_SECRET as string) as { userId: number }
         } catch (error) {
             if (error instanceof JsonWebTokenError) {
                 throw new HttpException(
