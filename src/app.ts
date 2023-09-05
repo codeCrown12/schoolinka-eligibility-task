@@ -1,7 +1,7 @@
 import cors from 'cors';
 import "express-async-errors"
 import express, { Application, Request } from "express";
-import { PORT, CLOUDINARY_API_KEY, CLOUDINARY_API_SECRET, CLOUDINARY_CLOUD_NAME } from './config';
+import { PORT} from './config';
 import { Route } from './interfaces/route.interface';
 import morganMiddleware from './middlewares/morgan.middleware';
 import { logger } from './utils/logger';
